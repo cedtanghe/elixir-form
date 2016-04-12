@@ -89,6 +89,12 @@ interface FormInterface extends DispatcherInterface
      * @param FieldInterface|FormInterface $item
      */
     public function add($item);
+    
+    /**
+     * @param string $name
+     * @return FieldInterface|FormInterface
+     */
+    public function get($name);
 
     /**
      * @param string $name
