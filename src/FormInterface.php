@@ -36,16 +36,6 @@ interface FormInterface extends ElementInterface
     const ENCTYPE_TEXT_PLAIN = 'text/plain';
     
     /**
-     * @var string
-     */
-    const METHOD_OPTIONS = 'method_options';
-    
-    /**
-     * @var string
-     */
-    const ENCTYPE_OPTIONS = 'enctype_options';
-    
-    /**
      * {@internal}
      */
     public function setParent(self $form);
