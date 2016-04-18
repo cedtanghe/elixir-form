@@ -2,161 +2,102 @@
 
 namespace Elixir\Form;
 
-use Elixir\Dispatcher\DispatcherInterface;
-use Elixir\Form\Field\FieldInterface;
+use Elixir\Form\ElementInterface;
+use Elixir\Form\FieldInterface;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-interface FormInterface extends DispatcherInterface 
+interface FormInterface extends ElementInterface
 {
     /**
      * @var string
      */
     const METHOD_GET = 'get';
-
+    
     /**
      * @var string
      */
     const METHOD_POST = 'post';
-
+    
     /**
      * @var string
      */
     const ENCTYPE_URLENCODED = 'application/x-www-form-urlencoded';
-
+    
     /**
      * @var string
      */
     const ENCTYPE_MULTIPART = 'multipart/form-data';
-
+    
     /**
      * @var string
      */
     const ENCTYPE_TEXT_PLAIN = 'text/plain';
-
+    
     /**
-     * @internal
+     * @var string
+     */
+    const METHOD_OPTIONS = 'method_options';
+    
+    /**
+     * @var string
+     */
+    const ENCTYPE_OPTIONS = 'enctype_options';
+    
+    /**
+     * {@internal}
      */
     public function setParent(self $form);
 
     /**
-     * @internal
+     * {@internal}
      */
     public function getParent();
-    
-    /**
-     * @param string $name
-     */
-    public function setName($name);
-
-    /**
-     * @return string
-     */
-    public function getName();
-
-    /**
-     * @param string|callable $value
-     */
-    public function setHelper($value);
-
-    /**
-     * @return string|callable
-     */
-    public function getHelper();
-
-    /**
-     * @return array
-     */
-    public function getAttributes();
-
-    /**
-     * @param array $data
-     */
-    public function setAttributes(array $data);
-
-    /**
-     * @return array
-     */
-    public function getOptions();
-
-    /**
-     * @param array $data
-     */
-    public function setOptions(array $data);
-
-    /**
-     * @param FieldInterface|FormInterface $item
-     */
-    public function add($item);
-    
-    /**
-     * @param string $name
-     * @return FieldInterface|FormInterface
-     */
-    public function get($name);
 
     /**
      * @param string $name
-     */
-    public function remove($name);
-    
-    /**
-     * @return array
-     */
-    public function all();
-    
-    /**
-     * @param array $data
-     */
-    public function bindValues(array $data);
-    
-    /**
-     * @return array
-     */
-    public function getValues();
-    
-    /**
-     * @param array $data
      * @return boolean
      */
-    public function submit(array $data = null);
-
-    /**
-     * @param array $data
-     */
-    public function bindErrors(array $data);
+    public function hasElement($name);
     
     /**
-     * @return boolean
+     * @param FieldInterface|FormInterface $element
      */
-    public function hasError();
-
-    /**
-     * @return array
-     */
-    public function getErrorMessages();
+    public function addElement($element);
     
     /**
-     * @return boolean
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
      */
-    public function isEligible();
+    public function getElement($name, $default = null);
     
     /**
      * @return void
      */
-    public function prepare();
-
-    /**
-     * @return boolean
-     */
-    public function isPrepared();
-
-    /**
-     * @return boolean
-     */
-    public function isEmpty();
+    public function removeElement($name);
     
+    /**
+     * @return array
+     */
+    public function getElements();
+    
+    /**
+     * @param array $elements
+     */
+    public function setElements(array $elements);
+    
+    /**
+     * @param array|\ArrayAccess $data
+     */
+    public function populate($data);
+    
+    /**
+     * @param array|\ArrayAccess $data
+     */
+    public function bind($data);
+
     /**
      * @param array $omit
      */
