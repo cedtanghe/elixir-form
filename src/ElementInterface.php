@@ -18,6 +18,11 @@ interface ElementInterface
     const VALUE_RAW = 'raw';
     
     /**
+     * @var string
+     */
+    const FILTER_MODE = 'filter_mode';
+    
+    /**
      * @var integer
      */
     const FILTER_IN = 1;
@@ -30,7 +35,7 @@ interface ElementInterface
     /**
      * @var integer
      */
-    const FILTER_ALL = 3;
+    const FILTER_BOTH = 3;
     
     /**
      * @param string $value
@@ -45,12 +50,12 @@ interface ElementInterface
     /**
      * @param string|callable $value
      */
-    public function setHelper($value);
+    public function setTheme($value);
 
     /**
      * @return string|callable
      */
-    public function getHelper();
+    public function getTheme();
     
     /**
      * @param  mixed $value
@@ -140,6 +145,16 @@ interface ElementInterface
      */
     public function isPrepared();
 
+    /**
+     * @param boolean $value
+     */
+    public function setRequired($value);
+    
+    /**
+     * @return boolean
+     */
+    public function isRequired();
+    
     /**
      * @return boolean
      */

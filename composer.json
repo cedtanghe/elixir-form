@@ -9,10 +9,19 @@
     ],
     "homepage": "https://github.com/cedtanghe/elixir-form",
     "repositories": [
-        
+        {
+            "type": "vcs",
+            "url": "https://github.com/cedtanghe/elixir-filter"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/cedtanghe/elixir-validation"
+        }
     ],
     "require": {
-        "php": ">=5.4"
+        "php": ">=5.4",
+        "elixir/elixir-filter": "*",
+        "elixir/elixir-validation": "*"
     },
     "require-dev": {
         "phpunit/PHPUnit": "~4.0"
