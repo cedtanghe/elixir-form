@@ -2,10 +2,14 @@
 
 namespace Elixir\Form;
 
+use Elixir\Filter\FilterizableInterface;
+use Elixir\Form\FormInterface;
+use Elixir\Validator\ValidatableInterface;
+
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-interface ElementInterface 
+interface ElementInterface extends FilterizableInterface, ValidatableInterface
 {
     /**
      * @var string
@@ -46,6 +50,16 @@ interface ElementInterface
      * @return string
      */
     public function getName();
+    
+    /**
+     * {@internal}
+     */
+    public function setParent(FormInterface $form);
+
+    /**
+     * {@internal}
+     */
+    public function getParent();
 
     /**
      * @param string|callable $value
@@ -179,4 +193,9 @@ interface ElementInterface
      * @return array
      */
     public function getErrorMessages();
+    
+    /**
+     * @return void
+     */
+    public function reset();
 }

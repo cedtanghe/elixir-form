@@ -21,7 +21,8 @@
     "require": {
         "php": ">=5.4",
         "elixir/elixir-filter": "*",
-        "elixir/elixir-validation": "*"
+        "elixir/elixir-validation": "*",
+        "elixir/elixir-dispatcher": "*"
     },
     "require-dev": {
         "phpunit/PHPUnit": "~4.0"

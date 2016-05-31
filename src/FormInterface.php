@@ -3,7 +3,6 @@
 namespace Elixir\Form;
 
 use Elixir\Form\ElementInterface;
-use Elixir\Form\FieldInterface;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -36,25 +35,15 @@ interface FormInterface extends ElementInterface
     const ENCTYPE_TEXT_PLAIN = 'text/plain';
     
     /**
-     * {@internal}
-     */
-    public function setParent(self $form);
-
-    /**
-     * {@internal}
-     */
-    public function getParent();
-
-    /**
      * @param string $name
      * @return boolean
      */
     public function hasElement($name);
     
     /**
-     * @param FieldInterface|FormInterface $element
+     * @param ElementInterface $element
      */
-    public function addElement($element);
+    public function addElement(ElementInterface $element);
     
     /**
      * @param string $name
@@ -87,9 +76,4 @@ interface FormInterface extends ElementInterface
      * @param array|\ArrayAccess $data
      */
     public function bind($data);
-
-    /**
-     * @param array $omit
-     */
-    public function reset(array $omit = []);
 }
