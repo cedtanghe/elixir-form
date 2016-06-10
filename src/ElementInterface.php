@@ -3,7 +3,6 @@
 namespace Elixir\Form;
 
 use Elixir\Filter\FilterizableInterface;
-use Elixir\Form\FormInterface;
 use Elixir\Validator\ValidatableInterface;
 
 /**
@@ -54,7 +53,7 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
     /**
      * {@internal}
      */
-    public function setParent(FormInterface $form);
+    public function setParent(self $value);
 
     /**
      * {@internal}
@@ -64,12 +63,12 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
     /**
      * @param string|callable $value
      */
-    public function setTheme($value);
+    public function setHelper($value);
 
     /**
      * @return string|callable
      */
-    public function getTheme();
+    public function getHelper();
     
     /**
      * @param  mixed $value
@@ -82,26 +81,26 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
     public function getValue($format = self::VALUE_NORMALIZED);
     
     /**
-     * @param string $key
+     * @param string|array $key
      * @return boolean
      */
     public function hasAttribute($key);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param mixed $default
      * @return mixed
      */
     public function getAttribute($key, $default = null);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param mixed $value
      */
     public function setAttribute($key, $value);
     
     /**
-     * @return void
+     * @param string|array $key
      */
     public function removeAttribute($key);
 
@@ -116,26 +115,26 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
     public function getAttributes();
     
     /**
-     * @param string $key
+     * @param string|array $key
      * @return boolean
      */
     public function hasOption($key);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param mixed $default
      * @return mixed
      */
     public function getOption($key, $default = null);
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param mixed $value
      */
     public function setOption($key, $value);
     
     /**
-     * @return void
+     * @param string|array $key
      */
     public function removeOption($key);
 
@@ -150,9 +149,10 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
     public function getOptions();
     
     /**
+     * @param mixed $args
      * @return void
      */
-    public function prepare();
+    public function prepare($args = null);
     
     /**
      * @return boolean
