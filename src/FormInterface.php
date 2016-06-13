@@ -76,4 +76,9 @@ interface FormInterface extends ElementInterface
      * @param array|\ArrayAccess $data
      */
     public function bind($data);
+    
+    /**
+     * @param array $omit
+     */
+    public function reset(array $omit = []);
 }

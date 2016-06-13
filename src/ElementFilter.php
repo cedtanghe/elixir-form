@@ -7,13 +7,13 @@ use Elixir\Filter\FilterInterface;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class FilterBoth implements FilterInterface
+class ElementFilter implements FilterInterface
 {
     /**
      * @var FilterInterface 
      */
     protected $in;
-
+    
     /**
      * @var FilterInterface 
      */

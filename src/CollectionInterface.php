@@ -8,13 +8,22 @@ namespace Elixir\Form;
 interface CollectionInterface
 {
    /**
-    * @param integer $min
-    * @param integer $max
+    * @param integer $value
     */
-    public function setCardinality($min, $max = -1);
+    public function setMinCardinality($value);
     
     /**
-     * @return array
+     * @return integer
      */
-    public function getCardinality();
+    public function getMinCardinality();
+    
+    /**
+    * @param integer $value
+    */
+    public function setMaxCardinality($value = -1);
+    
+    /**
+     * @return integer
+     */
+    public function getMaxCardinality();
 }

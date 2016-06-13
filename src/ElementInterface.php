@@ -193,9 +193,4 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
      * @return array
      */
     public function getErrorMessages();
-    
-    /**
-     * @return void
-     */
-    public function reset();
 }

@@ -20,6 +20,27 @@ class Form implements FormInterface
     protected $elements = [];
     
     /**
+     * @var array 
+     */
+    protected $value = [];
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function setValue($value, $format = self::VALUE_RAW)
+    {
+        // Todo
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue($format = self::VALUE_NORMALIZED)
+    {
+        // Todo
+    }
+    
+    /**
      * {@inheritdoc}
      */
     public function hasElement($name)
@@ -112,4 +133,36 @@ class Form implements FormInterface
     {
         // Todo
     }
-} 
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isEmpty()
+    {
+        // Todo
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isEligible()
+    {
+        // Todo
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isValid()
+    {
+        // Todo
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function reset(array $omit = [])
+    {
+        // Todo
+    }
+}
