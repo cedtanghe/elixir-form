@@ -190,6 +190,7 @@ class Form implements FormInterface
     
     /**
      * {@inheritdoc}
+     * @throws \InvalidArgumentException
      */
     public function prepare($args = null) 
     {
@@ -200,12 +201,15 @@ class Form implements FormInterface
         
         if ($this->hasAttribute('method') && !in_array(strtolower($this->getAttribute('method')), [self::METHOD_GET, self::METHOD_POST]))
         {
-            throw new \InvalidArgumentException(sprintf('The attribute "method" is invalid, use a hidden field "%s" instead', self::METHOD_PROXY_NAME));
+            throw new \InvalidArgumentException(
+                sprintf('The attribute "method" is invalid, use a hidden field "%s" instead', self::METHOD_PROXY_NAME)
+            );
         }
         
+        $this->setOption('required', $this->required);
         $this->setAttribute('name', $this->name);
-        $this->prepared = true;
         
+        $this->prepared = true;
         $this->dispatch(new FormEvent(FormEvent::PREPARE));
     }
     

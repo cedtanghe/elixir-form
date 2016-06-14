@@ -29,4 +29,13 @@ class Fieldset extends Form
     {
         return $this->legend;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function prepare($args = null) 
+    {
+        $this->setAttribute('legend', $this->legend);
+        parent::prepare($args);
+    }
 }

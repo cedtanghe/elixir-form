@@ -30,6 +30,11 @@ abstract class FieldAbstract implements FieldInterface
     protected $description;
     
     /**
+     * @var boolean
+     */
+    protected $prepared = false;
+    
+    /**
      * {@inheritdoc}
      */
     public function setValue($value, $format = self::VALUE_RAW)
@@ -90,7 +95,30 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function isEligible()
     {
-        // Todo
+        return $this->required || !$this->isEmpty();
+    }
+    
+     /**
+     * {@inheritdoc}
+     */
+    public function prepare($args = null) 
+    {
+        $this->setOption('required', $this->required);
+        $this->setOption('label', $this->label);
+        $this->setOption('description', $this->description);
+        
+        $this->setAttribute('name', $this->name);
+        
+        $this->prepared = true;
+        $this->dispatch(new FormEvent(FormEvent::PREPARE));
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isPrepared()
+    {
+        return $this->prepared;
     }
     
     /**
