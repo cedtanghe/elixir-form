@@ -22,6 +22,11 @@ interface FormInterface extends ElementInterface
     /**
      * @var string
      */
+    const METHOD_PROXY_NAME = '_method';
+    
+    /**
+     * @var string
+     */
     const ENCTYPE_URLENCODED = 'application/x-www-form-urlencoded';
     
     /**
@@ -74,8 +79,14 @@ interface FormInterface extends ElementInterface
     
     /**
      * @param array|\ArrayAccess $data
+     * @return boolean
      */
-    public function bind($data);
+    public function submit($data = null);
+    
+    /**
+     * @return boolean
+     */
+    public function isSubmited();
     
     /**
      * @param array $omit

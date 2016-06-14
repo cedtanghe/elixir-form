@@ -46,11 +46,6 @@ trait ElementTrait
     /**
      * @var boolean
      */
-    protected $prepared = false;
-    
-    /**
-     * @var boolean
-     */
     protected $required = false;
 
     /**
@@ -67,6 +62,14 @@ trait ElementTrait
     public function getName()
     {
         return $this->name;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function isMainElement()
+    {
+        return null === $this->parent;
     }
     
     /**
@@ -197,22 +200,6 @@ trait ElementTrait
         return $this->options;
     }
     
-    /**
-     * {@inheritdoc}
-     */
-    public function prepare($args = null)
-    {
-        $this->prepared = true;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function isPrepared()
-    {
-        return $this->prepared;
-    }
-
     /**
      * {@inheritdoc}
      */

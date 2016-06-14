@@ -10,6 +10,11 @@ use Elixir\Dispatcher\Event;
 class FormEvent extends Event 
 {
     /**
+     * @var string
+     */
+    const PREPARE = 'prepare';
+    
+    /**
      * {@inheritdoc}
      * @param array $params
      */

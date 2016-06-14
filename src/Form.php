@@ -4,6 +4,7 @@ namespace Elixir\Form;
 
 use Elixir\Dispatcher\DispatcherTrait;
 use Elixir\Form\ElementTrait;
+use Elixir\Form\FormEvent;
 use Elixir\Form\FormInterface;
 
 /**
@@ -25,6 +26,11 @@ class Form implements FormInterface
     protected $value = [];
     
     /**
+     * @var boolean
+     */
+    protected $prepared = false;
+    
+    /**
      * {@inheritdoc}
      */
     public function setValue($value, $format = self::VALUE_RAW)
@@ -38,6 +44,38 @@ class Form implements FormInterface
     public function getValue($format = self::VALUE_NORMALIZED)
     {
         // Todo
+    }
+    
+    /**
+     * @param string $value
+     */
+    public function setMethod($value)
+    {
+        $this->setAttribute('method', $value);
+    }
+    
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->getAttribute('method');
+    }
+    
+    /**
+     * @param string $value
+     */
+    public function setAction($value)
+    {
+        $this->setAttribute('action', $value);
+    }
+    
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->getAttribute('action');
     }
     
     /**
@@ -129,7 +167,7 @@ class Form implements FormInterface
     /**
      * {@inheritdoc}
      */
-    public function bind($data)
+    public function submit($data = null)
     {
         // Todo
     }
@@ -139,7 +177,44 @@ class Form implements FormInterface
      */
     public function isEmpty()
     {
-        // Todo
+        foreach ($this->elements as $element)
+        {
+            if (!$element->isEmpty())
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function prepare($args = null) 
+    {
+        if ($this->parent && $this->getAttribute('enctype') === self::ENCTYPE_MULTIPART)
+        {
+            $this->parent->setAttribute('enctype', self::ENCTYPE_MULTIPART);
+        }
+        
+        if ($this->hasAttribute('method') && !in_array(strtolower($this->getAttribute('method')), [self::METHOD_GET, self::METHOD_POST]))
+        {
+            throw new \InvalidArgumentException(sprintf('The attribute "method" is invalid, use a hidden field "%s" instead', self::METHOD_PROXY_NAME));
+        }
+        
+        $this->setAttribute('name', $this->name);
+        $this->prepared = true;
+        
+        $this->dispatch(new FormEvent(FormEvent::PREPARE));
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isPrepared()
+    {
+        return $this->prepared;
     }
     
     /**
@@ -147,7 +222,7 @@ class Form implements FormInterface
      */
     public function isEligible()
     {
-        // Todo
+        return $this->required || !$this->isEmpty();
     }
     
     /**
