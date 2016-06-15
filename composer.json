@@ -14,7 +14,8 @@
         "php": ">=5.6",
         "elixir/elixir-filter": "*",
         "elixir/elixir-validation": "*",
-        "elixir/elixir-dispatcher": "*"
+        "elixir/elixir-dispatcher": "*",
+        "elixir/elixir-stdlib": "*"
     },
     "require-dev": {
         "phpunit/PHPUnit": "~4.0"

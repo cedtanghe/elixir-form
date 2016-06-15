@@ -1,6 +1,6 @@
 <?php
 
-namespace Elixir\Form;
+namespace Elixir\Form\Filter;
 
 use Elixir\Filter\FilterInterface;
 
@@ -23,7 +23,7 @@ class DataNormalizer implements FilterInterface
      * @param FilterInterface $in
      * @param FilterInterface $out
      */
-    public function __construct(FilterInterface $in, FilterInterface $out)
+    public function __construct(FilterInterface $in = null, FilterInterface $out = null)
     {
         $this->in = $in;
         $this->out = $out;
@@ -36,27 +36,27 @@ class DataNormalizer implements FilterInterface
     {
         if ($options[ElementInterface::FILTER_MODE] === ElementInterface::FILTER_IN)
         {
-            return $this->in($content, $options);
+            return $this->applyFilterIn($content, $options);
         }
         else
         {
-            return $this->out($content, $options);
+            return $this->applyFilterOut($content, $options);
         }
     }
     
     /**
      * @see FilterInterface::filter()
      */
-    protected function in($content, array $options)
+    protected function applyFilterIn($content, array $options)
     {
-        return $this->in->filter($options, $options);
+        return $this->in ? $this->in->filter($content, $options) : $content;
     }
     
     /**
      * @see FilterInterface::filter()
      */
-    protected function out($content, array $options)
+    protected function applyFilterOut($content, array $options)
     {
-        return $this->out->filter($options, $options);
+        return $this->out ? $this->out->filter($content, $options) : $content;
     }
 }

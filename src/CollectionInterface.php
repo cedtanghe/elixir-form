@@ -7,9 +7,9 @@ namespace Elixir\Form;
  */
 interface CollectionInterface
 {
-   /**
-    * @param integer $value
-    */
+    /**
+     * @param integer $value
+     */
     public function setMinCardinality($value);
     
     /**
@@ -18,8 +18,8 @@ interface CollectionInterface
     public function getMinCardinality();
     
     /**
-    * @param integer $value
-    */
+     * @param integer $value
+     */
     public function setMaxCardinality($value = -1);
     
     /**

@@ -4,6 +4,8 @@ namespace Elixir\Form;
 
 use Elixir\Dispatcher\DispatcherTrait;
 use Elixir\Form\ElementTrait;
+use Elixir\Form\Extension\ExtensionInterface;
+use Elixir\Form\Extension\ExtensionTrait;
 use Elixir\Form\FormEvent;
 use Elixir\Form\FormInterface;
 use Elixir\STDLib\Facade\I18N;
@@ -11,10 +13,11 @@ use Elixir\STDLib\Facade\I18N;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class Form implements FormInterface
+class Form implements FormInterface, ExtensionInterface
 {
     use ElementTrait;
     use DispatcherTrait;
+    use ExtensionTrait;
     
     /**
      * @var string
@@ -236,20 +239,12 @@ class Form implements FormInterface
     
     /**
      * {@inheritdoc}
-     * @throws \InvalidArgumentException
      */
     public function prepare($args = null) 
     {
         if ($this->parent && $this->getAttribute('enctype') === self::ENCTYPE_MULTIPART)
         {
             $this->parent->setAttribute('enctype', self::ENCTYPE_MULTIPART);
-        }
-        
-        if ($this->hasAttribute('method') && !in_array(strtolower($this->getAttribute('method')), [self::METHOD_GET, self::METHOD_POST]))
-        {
-            throw new \InvalidArgumentException(
-                sprintf('The attribute "method" is invalid, use a hidden field "%s" instead', self::METHOD_PROXY_NAME)
-            );
         }
         
         $this->setOption('required', $this->required);
