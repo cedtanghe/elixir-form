@@ -7,7 +7,7 @@ use Elixir\Filter\FilterInterface;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class ElementFilter implements FilterInterface
+class DataNormalizer implements FilterInterface
 {
     /**
      * @var FilterInterface 

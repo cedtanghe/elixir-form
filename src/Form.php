@@ -6,6 +6,7 @@ use Elixir\Dispatcher\DispatcherTrait;
 use Elixir\Form\ElementTrait;
 use Elixir\Form\FormEvent;
 use Elixir\Form\FormInterface;
+use Elixir\STDLib\Facade\I18N;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -16,19 +17,34 @@ class Form implements FormInterface
     use DispatcherTrait;
     
     /**
+     * @var string
+     */
+    const ERROR_DEFAULT = 'error_default';
+    
+    /**
      * @var array 
      */
     protected $elements = [];
     
     /**
-     * @var array 
-     */
-    protected $value = [];
-    
-    /**
      * @var boolean
      */
     protected $prepared = false;
+    
+    /**
+     * @var boolean 
+     */
+    protected $submited = false;
+    
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCatalogMessages()
+    {
+        return [
+            self::ERROR_DEFAULT => I18N::__('Form is invalid.', ['context' => 'elixir'])
+        ];
+    }
     
     /**
      * {@inheritdoc}
@@ -96,9 +112,15 @@ class Form implements FormInterface
     
     /**
      * {@inheritdoc}
+     * @throws \InvalidArgumentException
      */
     public function addElement(ElementInterface $element)
     {
+        if (!$element->getName())
+        {
+            throw new \InvalidArgumentException('A form element require a name.');
+        }
+        
         $this->elements[] = $element;
     }
     
@@ -169,9 +191,33 @@ class Form implements FormInterface
      */
     public function submit($data = null)
     {
-        // Todo
+        $e = new FormEvent(FormEvent::PRE_SUBMIT, $data);
+        $this->dispatch($e);
+        
+        $data = $e->getData();
+        
+        if (!empty($data))
+        {
+            $this->setValue($value, self::VALUE_RAW);
+        }
+        
+        $this->dispatch(new FormEvent(FormEvent::PRE_SUBMIT_VALIDATION));
+        
+        $result = $this->validate($data);
+        $this->submited = true;
+        
+        $this->dispatch(new FormEvent(FormEvent::SUBMITED));
+        return $result;
     }
     
+    /**
+     * {@inheritdoc}
+     */
+    public function isSubmited()
+    {
+        return $this->submited;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -232,7 +278,7 @@ class Form implements FormInterface
     /**
      * {@inheritdoc}
      */
-    public function isValid()
+    public function validate($data = null, array $options = [])
     {
         // Todo
     }
@@ -240,8 +286,36 @@ class Form implements FormInterface
     /**
      * {@inheritdoc}
      */
+    public function isValid()
+    {
+        if (!$this->submited)
+        {
+            $this->validate();
+        }
+        
+        return $this->hasError();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public function reset(array $omit = [])
     {
-        // Todo
+        $this->submited = false;
+        $this->resetValidation();
+        
+        foreach ($this->elements as $element)
+        {
+            if (isset($omit[$element->getName()]))
+            {
+                $element->reset($omit[$element->getName()]);
+            }
+            else if (!in_array($element->getName(), $omit))
+            {
+                $element->reset();
+            }
+        }
+        
+        $this->dispatch(new FormEvent(FormEvent::RESET_FORM));
     }
 }

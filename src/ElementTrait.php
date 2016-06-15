@@ -47,7 +47,7 @@ trait ElementTrait
      * @var boolean
      */
     protected $required = false;
-
+    
     /**
      * {@inheritdoc}
      */
