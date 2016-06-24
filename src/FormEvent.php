@@ -27,7 +27,12 @@ class FormEvent extends Event
     /**
      * @var string
      */
-    const RESET_FORM = 'reset_form';
+    const SUBMITTED = 'submitted';
+    
+    /**
+     * @var string
+     */
+    const RESET_ELEMENT = 'reset_element';
     
     /**
      * @var array

@@ -35,7 +35,7 @@ class Fieldset extends Form
      */
     public function prepare($args = null) 
     {
-        $this->setAttribute('legend', $this->legend);
+        $this->setOption('legend', $this->legend);
         parent::prepare($args);
     }
 }

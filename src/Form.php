@@ -37,7 +37,7 @@ class Form implements FormInterface, ExtensionInterface
     /**
      * @var boolean 
      */
-    protected $submited = false;
+    protected $submitted = false;
     
     /**
      * {@inheritdoc}
@@ -207,18 +207,18 @@ class Form implements FormInterface, ExtensionInterface
         $this->dispatch(new FormEvent(FormEvent::PRE_SUBMIT_VALIDATION));
         
         $result = $this->validate($data);
-        $this->submited = true;
+        $this->submitted = true;
         
-        $this->dispatch(new FormEvent(FormEvent::SUBMITED));
+        $this->dispatch(new FormEvent(FormEvent::SUBMITTED));
         return $result;
     }
     
     /**
      * {@inheritdoc}
      */
-    public function isSubmited()
+    public function isSubmitted()
     {
-        return $this->submited;
+        return $this->submitted;
     }
 
     /**
@@ -283,7 +283,7 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function isValid()
     {
-        if (!$this->submited)
+        if (!$this->submitted)
         {
             $this->validate();
         }
@@ -296,7 +296,7 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function reset(array $omit = [])
     {
-        $this->submited = false;
+        $this->submitted = false;
         $this->resetValidation();
         
         foreach ($this->elements as $element)
@@ -311,6 +311,6 @@ class Form implements FormInterface, ExtensionInterface
             }
         }
         
-        $this->dispatch(new FormEvent(FormEvent::RESET_FORM));
+        $this->dispatch(new FormEvent(FormEvent::RESET_ELEMENT));
     }
 }

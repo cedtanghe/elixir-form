@@ -86,7 +86,7 @@ interface FormInterface extends ElementInterface
     /**
      * @return boolean
      */
-    public function isSubmited();
+    public function isSubmitted();
     
     /**
      * @param array $omit

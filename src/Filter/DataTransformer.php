@@ -2,12 +2,12 @@
 
 namespace Elixir\Form\Filter;
 
-use Elixir\Filter\FilterInterface;
+use Elixir\Form\DataTransformerInterface;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class DataNormalizer implements FilterInterface
+class DataTransformer implements DataTransformerInterface
 {
     /**
      * @var FilterInterface 
@@ -25,8 +25,24 @@ class DataNormalizer implements FilterInterface
      */
     public function __construct(FilterInterface $in = null, FilterInterface $out = null)
     {
-        $this->in = $in;
-        $this->out = $out;
+        $this->setFilterIn($in);
+        $this->setFilterOut($out);
+    }
+    
+    /**
+     * @param FilterInterface $value
+     */
+    public function setFilterIn(FilterInterface $value)
+    {
+        $this->in = $value;
+    }
+    
+    /**
+     * @param FilterInterface $value
+     */
+    public function setFilterOut(FilterInterface $value)
+    {
+        $this->out = $value;
     }
     
     /**

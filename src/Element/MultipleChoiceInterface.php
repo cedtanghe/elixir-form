@@ -29,9 +29,10 @@ interface MultipleChoiceInterface
     
     /**
      * @param array|\ArrayAccess $value
+     * @param string $dataType
      * @param string $type
      */
-    public function setData($value);
+    public function setData($value, $dataType = null);
     
     /**
      * @return array|\ArrayAccess
