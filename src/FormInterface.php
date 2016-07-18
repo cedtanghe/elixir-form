@@ -12,16 +12,6 @@ interface FormInterface extends ElementInterface
     /**
      * @var string
      */
-    const METHOD_GET = 'get';
-    
-    /**
-     * @var string
-     */
-    const METHOD_POST = 'post';
-    
-    /**
-     * @var string
-     */
     const METHOD_PROXY_NAME = '_method';
     
     /**
@@ -41,9 +31,10 @@ interface FormInterface extends ElementInterface
     
     /**
      * @param string $name
+     * @param boolean $sub
      * @return boolean
      */
-    public function hasElement($name);
+    public function hasElement($name, $sub = false);
     
     /**
      * @param ElementInterface $element
@@ -52,15 +43,17 @@ interface FormInterface extends ElementInterface
     
     /**
      * @param string $name
+     * @param boolean $sub
      * @param mixed $default
      * @return mixed
      */
-    public function getElement($name, $default = null);
+    public function getElement($name, $sub = false, $default = null);
     
     /**
-     * @return void
+     * @param string $name
+     * @param boolean $sub
      */
-    public function removeElement($name);
+    public function removeElement($name, $sub = false);
     
     /**
      * @return array

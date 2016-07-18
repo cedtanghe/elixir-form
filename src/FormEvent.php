@@ -12,7 +12,17 @@ class FormEvent extends Event
     /**
      * @var string
      */
-    const PREPARE = 'prepare';
+    const PREPARED = 'prepared';
+    
+    /**
+     * @var string
+     */
+    const PRE_POPULATE = 'pre_populate';
+    
+    /**
+     * @var string
+     */
+    const POPULATED = 'populated';
     
     /**
      * @var string
@@ -22,12 +32,12 @@ class FormEvent extends Event
     /**
      * @var string
      */
-    const PRE_SUBMIT_VALIDATION = 'pre_submit_validation';
+    const SUBMITTED = 'submitted';
     
     /**
      * @var string
      */
-    const SUBMITTED = 'submitted';
+    const VALIDATE_ELEMENT = 'validate_element';
     
     /**
      * @var string
@@ -38,7 +48,7 @@ class FormEvent extends Event
      * @var array
      */
     protected $data;
-    
+
     /**
      * {@inheritdoc}
      * @param array $params
@@ -46,10 +56,7 @@ class FormEvent extends Event
     public function __construct($type, array $params = [])
     {
         parent::__construct($type);
-        
-        $params += [
-            'data' => null
-        ];
+        $params += ['data' => null];
         
         $this->data = $params['data'];
     }

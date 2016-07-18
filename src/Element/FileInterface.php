@@ -10,6 +10,11 @@ interface FileInterface
     /**
      * @return boolean
      */
+    public function hasMultipleFiles();
+    
+    /**
+     * @return boolean
+     */
     public function isUploaded();
     
     /**

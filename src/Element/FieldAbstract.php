@@ -15,6 +15,11 @@ abstract class FieldAbstract implements FieldInterface
     use DispatcherTrait;
     
     /**
+     * @var string
+     */
+    const ERROR_DEFAULT = 'error_default';
+    
+    /**
      * @var array 
      */
     protected $value = [];
@@ -33,6 +38,16 @@ abstract class FieldAbstract implements FieldInterface
      * @var boolean
      */
     protected $prepared = false;
+    
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCatalogMessages()
+    {
+        return [
+            self::ERROR_DEFAULT => I18N::__('Field is invalid.', ['context' => 'elixir'])
+        ];
+    }
     
     /**
      * {@inheritdoc}
@@ -110,7 +125,7 @@ abstract class FieldAbstract implements FieldInterface
         $this->setAttribute('name', $this->name);
         
         $this->prepared = true;
-        $this->dispatch(new FormEvent(FormEvent::PREPARE));
+        $this->dispatch(new FormEvent(FormEvent::PREPARED));
     }
     
     /**
@@ -119,6 +134,14 @@ abstract class FieldAbstract implements FieldInterface
     public function isPrepared()
     {
         return $this->prepared;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function validate($data = null, array $options = [])
+    {
+        // Todo
     }
     
     /**

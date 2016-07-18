@@ -62,7 +62,44 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function getValue($format = self::VALUE_NORMALIZED)
     {
-        // Todo
+        $values = [];
+        
+        foreach ($this->elements as $element)
+        {
+            if (isset($values[$element->getName()]))
+            {
+                $values[$element->getName()] = array_merge((array)$values[$element->getName()], $element->getValue($format));
+            }
+            else
+            {
+                $values[$element->getName()] = $element->getValue($format);
+            }
+        }
+        
+        if ($format === self::VALUE_NORMALIZED)
+        {
+            $values = $this->filter($values, [ElementInterface::FILTER_MODE => ElementInterface::FILTER_IN]);
+        }
+        
+        return $values;
+    }
+    
+     /**
+     * {@inheritdoc}
+     */
+    public function filter($data = null, array $options = [])
+    {
+        $data = $data ?: $this->getValue(self::VALUE_RAW);
+        
+        foreach ($this->filters as $config)
+        {
+            $filter = $config['filter'];
+            $o = $config['options'] + $options;
+            
+            $data = $filter->filter($data, $o);
+        }
+        
+        return $data;
     }
     
     /**
@@ -100,11 +137,15 @@ class Form implements FormInterface, ExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function hasElement($name)
+    public function hasElement($name, $sub = false)
     {
         foreach ($this->elements as $element)
         {
             if ($element->getName() === $name)
+            {
+                return true;
+            }
+            else if ($sub && ($element instanceof FormInterface) && $element->hasElement($name, true))
             {
                 return true;
             }
@@ -130,14 +171,30 @@ class Form implements FormInterface, ExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getElement($name, $default = null)
+    public function getElement($name, $sub = false, $default = null)
     {
+        $elements = [];
+        
         foreach ($this->elements as $element)
         {
             if ($element->getName() === $name)
             {
-                return $element;
+                $elements[] = $element;
             }
+            else if ($sub && ($element instanceof FormInterface))
+            {
+                $el = $element->getElement($name, true, null);
+                        
+                if ($el)
+                {
+                    $elements[] = $el;
+                }
+            }
+        }
+        
+        if (count($elements) > 0)
+        {
+            return count($elements) === 1 ? $elements[0] : $elements;
         }
         
         return is_callable($default) ? call_user_func($default) : $default;
@@ -146,16 +203,17 @@ class Form implements FormInterface, ExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function removeElement($name)
+    public function removeElement($name, $sub = false)
     {
-        $i = count($this->elements);
-        
-        while ($i--)
+        foreach ($this->elements as $index => $element)
         {
             if ($element->getName() === $name)
             {
-                array_splice($this->elements, $i, 1);
-                break;
+                unset($this->elements[$index]);
+            }
+            else if ($sub && ($element instanceof FormInterface) && $element->hasElement($name, true))
+            {
+                $element->removeElement($name, true);
             }
         }
     }
@@ -175,7 +233,7 @@ class Form implements FormInterface, ExtensionInterface
     {
         $this->elements = [];
         
-        foreach ($elements as $elements)
+        foreach ($elements as $element)
         {
             $this->addElement($element);
         }
@@ -186,7 +244,11 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function populate($data)
     {
-        // Todo
+        $e = new FormEvent(FormEvent::PRE_POPULATE, ['data' => $data]);
+        $this->dispatch($e);
+        
+        $this->setValue($e->getData(), self::VALUE_NORMALIZED);
+        $this->dispatch(new FormEvent(FormEvent::POPULATED));
     }
     
     /**
@@ -194,19 +256,18 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function submit($data = null)
     {
-        $e = new FormEvent(FormEvent::PRE_SUBMIT, $data);
+        $e = new FormEvent(FormEvent::PRE_SUBMIT, ['data' => $data]);
         $this->dispatch($e);
         
         $data = $e->getData();
         
         if (!empty($data))
         {
-            $this->setValue($value, self::VALUE_RAW);
+            $this->setValue($data, self::VALUE_RAW);
         }
         
-        $this->dispatch(new FormEvent(FormEvent::PRE_SUBMIT_VALIDATION));
-        
-        $result = $this->validate($data);
+        $this->submitted = false;
+        $result = $this->validate();
         $this->submitted = true;
         
         $this->dispatch(new FormEvent(FormEvent::SUBMITTED));
@@ -247,11 +308,21 @@ class Form implements FormInterface, ExtensionInterface
             $this->parent->setAttribute('enctype', self::ENCTYPE_MULTIPART);
         }
         
+        if (!$this->getMethod())
+        {
+            $this->setMethod('POST');
+        }
+        
+        if (!$this->getAction())
+        {
+            $this->setAction('');
+        }
+        
         $this->setOption('required', $this->required);
         $this->setAttribute('name', $this->name);
         
         $this->prepared = true;
-        $this->dispatch(new FormEvent(FormEvent::PREPARE));
+        $this->dispatch(new FormEvent(FormEvent::PREPARED));
     }
     
     /**
@@ -275,7 +346,72 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function validate($data = null, array $options = [])
     {
-        // Todo
+        $options += [
+            'revalidate' => false
+        ];
+        
+        if ($this->submitted && !$options['revalidate'])
+        {
+            return $this->hasError();
+        }
+        
+        $this->resetValidation();
+        
+        if ($data)
+        {
+            $this->setValue($data, self::VALUE_RAW);
+        }
+        
+        $this->dispatch(new FormEvent(FormEvent::VALIDATE_ELEMENT));
+        
+        foreach ($this->elements as $element)
+        {
+            if (!$element->validate(null, $options))
+            {
+                if (!isset($this->validationErrors['elements'][$element->getName()]))
+                {
+                    $this->validationErrors['elements'][$element->getName()] = [];
+                }
+                
+                $this->validationErrors['elements'][$element->getName()] = array_merge(
+                    $this->validationErrors['elements'][$element->getName()],
+                    $element->getErrorMessages()
+                );
+                
+                $this->validationErrors['elements'][$element->getName()] = array_unique($this->validationErrors['elements'][$element->getName()]);
+                
+                if ($this->breakChainValidationOnFailure)
+                {
+                    return false;
+                }
+            }
+        }
+        
+        foreach ($this->validators as $config)
+        {
+            $validator = $config['validator'];
+            $o = $config['options'] + $options;
+
+            $valid = $validator->validate($this, $o);
+
+            if (!$valid)
+            {
+                if (!isset($this->validationErrors['form']))
+                {
+                    $this->validationErrors['form'] = [];
+                }
+                
+                $this->validationErrors['form'] = array_merge($this->validationErrors['form'], $validator->getErrors());
+                $this->validationErrors['form'] = array_unique($this->validationErrors['form']);
+
+                if ($this->breakChainValidationOnFailure)
+                {
+                    return false;
+                }
+            }
+        }
+        
+        return $this->hasError();
     }
     
     /**
@@ -283,12 +419,7 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function isValid()
     {
-        if (!$this->submitted)
-        {
-            $this->validate();
-        }
-        
-        return $this->hasError();
+        return $this->validate();
     }
     
     /**
@@ -301,13 +432,9 @@ class Form implements FormInterface, ExtensionInterface
         
         foreach ($this->elements as $element)
         {
-            if (isset($omit[$element->getName()]))
+            if (!isset($omit[$element->getName()]))
             {
-                $element->reset($omit[$element->getName()]);
-            }
-            else if (!in_array($element->getName(), $omit))
-            {
-                $element->reset();
+                $element->reset($omit);
             }
         }
         

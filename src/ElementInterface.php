@@ -183,14 +183,4 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
      * @return boolean
      */
     public function isValid();
-    
-    /**
-     * @param array $messages
-     */
-    public function setErrorMessages(array $messages);
-    
-    /**
-     * @return array
-     */
-    public function getErrorMessages();
 }
