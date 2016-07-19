@@ -2,8 +2,10 @@
 
 namespace Elixir\Form;
 
+use Elixir\Filter\FilterInterface;
 use Elixir\Filter\FilterTrait;
 use Elixir\Form\ElementInterface;
+use Elixir\Form\Filter\DataTransformerInterface;
 use Elixir\Validator\ValidateTrait;
 use function Elixir\STDLib\array_get;
 use function Elixir\STDLib\array_has;
@@ -250,7 +252,7 @@ trait ElementTrait
     /**
      * @see FilterTrait::addFilter()
      */
-    public function addDataTransformer(Filter\DataTransformerInterface $filter, array $options = [])
+    public function addDataTransformer(DataTransformerInterface $filter, array $options = [])
     {
         $this->addFilterBoth($filter, $options);
     }
@@ -260,7 +262,7 @@ trait ElementTrait
      */
     public function addFilter(FilterInterface $filter, array $options = [])
     {
-        if ($filter instanceof Filter\DataTransformerInterface)
+        if ($filter instanceof DataTransformerInterface)
         {
             $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_BOTH;
         }
