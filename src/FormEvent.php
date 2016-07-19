@@ -12,6 +12,11 @@ class FormEvent extends Event
     /**
      * @var string
      */
+    const BUILD = 'build';
+    
+    /**
+     * @var string
+     */
     const PREPARED = 'prepared';
     
     /**

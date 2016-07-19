@@ -12,11 +12,6 @@ interface FormInterface extends ElementInterface
     /**
      * @var string
      */
-    const METHOD_PROXY_NAME = '_method';
-    
-    /**
-     * @var string
-     */
     const ENCTYPE_URLENCODED = 'application/x-www-form-urlencoded';
     
     /**
@@ -28,6 +23,16 @@ interface FormInterface extends ElementInterface
      * @var string
      */
     const ENCTYPE_TEXT_PLAIN = 'text/plain';
+    
+    /**
+     * @param array|\ArrayAccess $data
+     */
+    public function build($data = null);
+    
+    /**
+     * @return boolean
+     */
+    public function isBuilt();
     
     /**
      * @param string $name

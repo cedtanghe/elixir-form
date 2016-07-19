@@ -15,7 +15,11 @@ use function Elixir\STDLib\array_set;
  */
 trait ElementTrait 
 {
-    use FilterTrait;
+    use FilterTrait 
+    {
+        addFilter as traitAddFilter;
+    }
+    
     use ValidateTrait;
     
     /**
@@ -214,5 +218,57 @@ trait ElementTrait
     public function isRequired()
     {
         return $this->required;
+    }
+    
+    /**
+     * @see FilterTrait::addFilter()
+     */
+    public function addFilterIn(FilterInterface $filter, array $options = [])
+    {
+        $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_IN;
+        $this->addFilter($filter, $options);
+    }
+    
+    /**
+     * @see FilterTrait::addFilter()
+     */
+    public function addFilterOut(FilterInterface $filter, array $options = [])
+    {
+        $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_OUT;
+        $this->addFilter($filter, $options);
+    }
+    
+    /**
+     * @see FilterTrait::addFilter()
+     */
+    public function addFilterBoth(FilterInterface $filter, array $options = [])
+    {
+        $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_BOTH;
+        $this->addFilter($filter, $options);
+    }
+    
+    /**
+     * @see FilterTrait::addFilter()
+     */
+    public function addDataTransformer(Filter\DataTransformerInterface $filter, array $options = [])
+    {
+        $this->addFilterBoth($filter, $options);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function addFilter(FilterInterface $filter, array $options = [])
+    {
+        if ($filter instanceof Filter\DataTransformerInterface)
+        {
+            $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_BOTH;
+        }
+        else if (!isset($options[ElementInterface::FILTER_MODE]))
+        {
+            $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_OUT;
+        }
+        
+        return $this->traitAddFilter($filter, $options);
     }
 }

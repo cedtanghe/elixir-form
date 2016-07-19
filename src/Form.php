@@ -9,6 +9,7 @@ use Elixir\Form\Extension\ExtensionTrait;
 use Elixir\Form\FormEvent;
 use Elixir\Form\FormInterface;
 use Elixir\STDLib\Facade\I18N;
+use function Elixir\STDLib\array_get;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -38,6 +39,22 @@ class Form implements FormInterface, ExtensionInterface
      * @var boolean 
      */
     protected $submitted = false;
+    
+    /**
+     * @var boolean 
+     */
+    protected $built = false;
+
+    /**
+     * @param string $name
+     */
+    public function __construct($name = null) 
+    {
+        if ($name)
+        {
+            $this->setName($name);
+        }
+    }
     
     /**
      * {@inheritdoc}
@@ -78,7 +95,7 @@ class Form implements FormInterface, ExtensionInterface
         
         if ($format === self::VALUE_NORMALIZED)
         {
-            $values = $this->filter($values, [ElementInterface::FILTER_MODE => ElementInterface::FILTER_IN]);
+            $values = $this->filter($values, [self::FILTER_MODE => self::FILTER_OUT]);
         }
         
         return $values;
@@ -90,13 +107,15 @@ class Form implements FormInterface, ExtensionInterface
     public function filter($data = null, array $options = [])
     {
         $data = $data ?: $this->getValue(self::VALUE_RAW);
+        $type = array_get(self::FILTER_MODE, $options, self::FILTER_OUT);
         
         foreach ($this->filters as $config)
         {
-            $filter = $config['filter'];
-            $o = $config['options'] + $options;
-            
-            $data = $filter->filter($data, $o);
+            if (($config['options'][self::FILTER_MODE] & $type) === $type)
+            {
+                $o = $config['options'] + $options;
+                $data = $config['filter']->filter($data, $o);
+            }
         }
         
         return $data;
@@ -132,6 +151,27 @@ class Form implements FormInterface, ExtensionInterface
     public function getAction()
     {
         return $this->getAttribute('action');
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function build($data = null)
+    {
+        $this->built = true;
+        
+        $e = new FormEvent(FormEvent::BUILD, ['data' => $data]);
+        $this->dispatch($e);
+        
+        $data = $e->getData();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isBuilt()
+    {
+        return $this->built;
     }
     
     /**
@@ -244,6 +284,11 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function populate($data)
     {
+        if (!$this->built)
+        {
+            $this->build($data);
+        }
+        
         $e = new FormEvent(FormEvent::PRE_POPULATE, ['data' => $data]);
         $this->dispatch($e);
         
@@ -256,6 +301,11 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function submit($data = null)
     {
+        if (!$this->built)
+        {
+            $this->build($data);
+        }
+        
         $e = new FormEvent(FormEvent::PRE_SUBMIT, ['data' => $data]);
         $this->dispatch($e);
         
