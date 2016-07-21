@@ -26,6 +26,11 @@ class Form implements FormInterface, ExtensionInterface
     const ERROR_DEFAULT = 'error_default';
     
     /**
+     * {@inheritdoc}
+     */
+    protected $helper = 'form';
+    
+    /**
      * @var array 
      */
     protected $elements = [];
@@ -71,7 +76,24 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function setValue($value, $format = self::VALUE_RAW)
     {
-        // Todo
+        $values = (array)$value;
+        
+        if ($format === self::VALUE_NORMALIZED)
+        {
+            $values = $this->filter($values, [self::FILTER_MODE => self::FILTER_IN]);
+        }
+        
+        foreach ($this->elements as $element)
+        {
+            if ($element instanceof FormInterface)
+            {
+                $element->setValue($values, $format);
+            }
+            else if (array_key_exists($values[$element->getName()]))
+            {
+                $element->setValue($values[$element->getName()], $format);
+            }
+        }
     }
     
     /**
@@ -83,7 +105,7 @@ class Form implements FormInterface, ExtensionInterface
         
         foreach ($this->elements as $element)
         {
-            if (isset($values[$element->getName()]))
+            if (array_key_exists($values[$element->getName()]))
             {
                 $values[$element->getName()] = array_merge((array)$values[$element->getName()], $element->getValue($format));
             }

@@ -10,6 +10,11 @@ use Elixir\Form\Form;
 class Fieldset extends Form
 {
     /**
+     * {@inheritdoc}
+     */
+    protected $helper = 'fieldset';
+    
+    /**
      * @var string
      */
     protected $legend;
