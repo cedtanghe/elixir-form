@@ -5,6 +5,8 @@ namespace Elixir\Form\Element;
 use Elixir\Dispatcher\DispatcherTrait;
 use Elixir\Form\ElementTrait;
 use Elixir\Form\FieldInterface;
+use Elixir\Form\FormEvent;
+use Elixir\STDLib\Facade\I18N;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -20,9 +22,9 @@ abstract class FieldAbstract implements FieldInterface
     const ERROR_DEFAULT = 'error_default';
     
     /**
-     * @var array 
+     * @var mixed 
      */
-    protected $value = [];
+    protected $value;
     
     /**
      * @var string 
@@ -54,7 +56,12 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function setValue($value, $format = self::VALUE_RAW)
     {
-        // Todo
+        if ($format === self::VALUE_NORMALIZED)
+        {
+            $value = $this->filter($value, [self::FILTER_MODE => self::FILTER_IN]);
+        }
+        
+        $this->value = $value;
     }
     
     /**
@@ -62,7 +69,14 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function getValue($format = self::VALUE_NORMALIZED)
     {
-        // Todo
+        $value = $this->value;
+        
+        if ($format === self::VALUE_NORMALIZED)
+        {
+            $value = $this->filter($value, [self::FILTER_MODE => self::FILTER_OUT]);
+        }
+        
+        return $value;
     }
     
     /**
@@ -102,7 +116,8 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function isEmpty()
     {
-        // Todo
+        $value = $this->getValue(self::VALUE_NORMALIZED);
+        return empty($value);
     }
     
     /**
@@ -141,7 +156,35 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function validate($data = null, array $options = [])
     {
-        // Todo
+        $this->resetValidation();
+        
+        if ($data)
+        {
+            $this->setValue($data, self::VALUE_RAW);
+        }
+        
+        $this->dispatch(new FormEvent(FormEvent::VALIDATE_ELEMENT));
+        
+        foreach ($this->validators as $config)
+        {
+            $validator = $config['validator'];
+            $o = $config['options'] + $options + ['element_context' => $this];
+
+            $valid = $validator->validate($this->value, $o);
+
+            if (!$valid)
+            {
+                $this->validationErrors += $validator->getErrors();
+
+                if ($this->breakChainValidationOnFailure)
+                {
+                    return false;
+                }
+            }
+        }
+        
+        $this->validationErrors = array_unique($this->validationErrors);
+        return $this->hasError();
     }
     
     /**
@@ -149,7 +192,7 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function isValid()
     {
-        // Todo
+        return $this->validate();
     }
     
     /**
@@ -157,6 +200,9 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function reset()
     {
-        // Todo
+        $this->resetValidation();
+        $this->value = null;
+        
+        $this->dispatch(new FormEvent(FormEvent::RESET_ELEMENT));
     }
 }

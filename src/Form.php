@@ -9,7 +9,6 @@ use Elixir\Form\Extension\ExtensionTrait;
 use Elixir\Form\FormEvent;
 use Elixir\Form\FormInterface;
 use Elixir\STDLib\Facade\I18N;
-use function Elixir\STDLib\array_get;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -123,26 +122,6 @@ class Form implements FormInterface, ExtensionInterface
         return $values;
     }
     
-     /**
-     * {@inheritdoc}
-     */
-    public function filter($data = null, array $options = [])
-    {
-        $data = $data ?: $this->getValue(self::VALUE_RAW);
-        $type = array_get(self::FILTER_MODE, $options, self::FILTER_OUT);
-        
-        foreach ($this->filters as $config)
-        {
-            if (($config['options'][self::FILTER_MODE] & $type) === $type)
-            {
-                $o = $config['options'] + $options;
-                $data = $config['filter']->filter($data, $o);
-            }
-        }
-        
-        return $data;
-    }
-    
     /**
      * @param string $value
      */
@@ -181,11 +160,7 @@ class Form implements FormInterface, ExtensionInterface
     public function build($data = null)
     {
         $this->built = true;
-        
-        $e = new FormEvent(FormEvent::BUILD, ['data' => $data]);
-        $this->dispatch($e);
-        
-        $data = $e->getData();
+        $this->dispatch(new FormEvent(FormEvent::BUILD, ['data' => $data]));
     }
     
     /**
@@ -462,10 +437,10 @@ class Form implements FormInterface, ExtensionInterface
         foreach ($this->validators as $config)
         {
             $validator = $config['validator'];
-            $o = $config['options'] + $options;
-
+            $o = $config['options'] + $options + ['element_context' => $this];
+            
             $valid = $validator->validate($this, $o);
-
+            
             if (!$valid)
             {
                 if (!isset($this->validationErrors['form']))

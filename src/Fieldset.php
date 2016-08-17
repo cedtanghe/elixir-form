@@ -2,12 +2,13 @@
 
 namespace Elixir\Form;
 
+use Elixir\Form\FieldsetInterface;
 use Elixir\Form\Form;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class Fieldset extends Form
+class Fieldset extends Form implements FieldsetInterface
 {
     /**
      * {@inheritdoc}

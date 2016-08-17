@@ -273,4 +273,24 @@ trait ElementTrait
         
         return $this->traitAddFilter($filter, $options);
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function filter($data = null, array $options = [])
+    {
+        $data = $data ?: $this->getValue(self::VALUE_RAW);
+        $type = array_get(self::FILTER_MODE, $options, self::FILTER_OUT);
+        
+        foreach ($this->filters as $config)
+        {
+            if (($config['options'][self::FILTER_MODE] & $type) === $type)
+            {
+                $o = $config['options'] + $options;
+                $data = $config['filter']->filter($data, $o);
+            }
+        }
+        
+        return $data;
+    }
 }
