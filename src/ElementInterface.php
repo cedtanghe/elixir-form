@@ -150,7 +150,6 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
     
     /**
      * @param mixed $args
-     * @return void
      */
     public function prepare($args = null);
     
