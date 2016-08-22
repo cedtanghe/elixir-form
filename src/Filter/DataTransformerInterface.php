@@ -7,4 +7,6 @@ use Elixir\Filter\FilterInterface;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-interface DataTransformerInterface extends FilterInterface {}
+interface DataTransformerInterface extends FilterInterface
+{
+}

@@ -11,29 +11,29 @@ interface CollectionInterface
      * @var string
      */
     const MIN_CARDINALITY = 'min_cardinality';
-    
+
     /**
      * @var string
      */
     const MAX_CARDINALITY = 'max_cardinality';
-    
+
     /**
-     * @param integer $value
+     * @param int $value
      */
     public function setMinCardinality($value);
-    
+
     /**
-     * @return integer
+     * @return int
      */
     public function getMinCardinality();
-    
+
     /**
-     * @param integer $value
+     * @param int $value
      */
     public function setMaxCardinality($value = -1);
-    
+
     /**
-     * @return integer
+     * @return int
      */
     public function getMaxCardinality();
 }

@@ -4,7 +4,6 @@ namespace Elixir\Form;
 
 use Elixir\Filter\FilterInterface;
 use Elixir\Filter\FilterTrait;
-use Elixir\Form\ElementInterface;
 use Elixir\Form\Filter\DataTransformerInterface;
 use Elixir\Validator\ValidateTrait;
 use function Elixir\STDLib\array_get;
@@ -15,45 +14,45 @@ use function Elixir\STDLib\array_set;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-trait ElementTrait 
+trait ElementTrait
 {
-    use FilterTrait 
+    use FilterTrait
     {
         addFilter as traitAddFilter;
     }
-    
+
     use ValidateTrait;
-    
+
     /**
      * @var string
      */
     protected $name;
-    
+
     /**
      * @var ElementInterface
      */
     protected $parent;
-    
+
     /**
      * @var string|callable
      */
     protected $helper;
-    
+
     /**
      * @var array
      */
     protected $attributes = [];
-    
+
     /**
      * @var array
      */
     protected $options = [];
-    
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $required = false;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -61,7 +60,7 @@ trait ElementTrait
     {
         $this->name = $value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -69,15 +68,15 @@ trait ElementTrait
     {
         return $this->name;
     }
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     public function isMainElement()
     {
         return null === $this->parent;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -109,7 +108,7 @@ trait ElementTrait
     {
         return $this->helper;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -133,7 +132,7 @@ trait ElementTrait
     {
         array_set($key, $value, $this->attributes);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -157,7 +156,7 @@ trait ElementTrait
     {
         return $this->attributes;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -181,7 +180,7 @@ trait ElementTrait
     {
         array_set($key, $value, $this->options);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -205,7 +204,7 @@ trait ElementTrait
     {
         return $this->options;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -213,7 +212,7 @@ trait ElementTrait
     {
         $this->required = $value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -221,7 +220,7 @@ trait ElementTrait
     {
         return $this->required;
     }
-    
+
     /**
      * @see FilterTrait::addFilter()
      */
@@ -230,7 +229,7 @@ trait ElementTrait
         $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_IN;
         $this->addFilter($filter, $options);
     }
-    
+
     /**
      * @see FilterTrait::addFilter()
      */
@@ -239,7 +238,7 @@ trait ElementTrait
         $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_OUT;
         $this->addFilter($filter, $options);
     }
-    
+
     /**
      * @see FilterTrait::addFilter()
      */
@@ -248,7 +247,7 @@ trait ElementTrait
         $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_BOTH;
         $this->addFilter($filter, $options);
     }
-    
+
     /**
      * @see FilterTrait::addFilter()
      */
@@ -256,24 +255,21 @@ trait ElementTrait
     {
         $this->addFilterBoth($filter, $options);
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function addFilter(FilterInterface $filter, array $options = [])
     {
-        if ($filter instanceof DataTransformerInterface)
-        {
+        if ($filter instanceof DataTransformerInterface) {
             $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_BOTH;
-        }
-        else if (!isset($options[ElementInterface::FILTER_MODE]))
-        {
+        } elseif (!isset($options[ElementInterface::FILTER_MODE])) {
             $options[ElementInterface::FILTER_MODE] = ElementInterface::FILTER_OUT;
         }
-        
+
         return $this->traitAddFilter($filter, $options);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -281,16 +277,14 @@ trait ElementTrait
     {
         $data = $data ?: $this->getValue(self::VALUE_RAW);
         $type = array_get(self::FILTER_MODE, $options, self::FILTER_OUT);
-        
-        foreach ($this->filters as $config)
-        {
-            if (($config['options'][self::FILTER_MODE] & $type) === $type)
-            {
+
+        foreach ($this->filters as $config) {
+            if (($config['options'][self::FILTER_MODE] & $type) === $type) {
                 $o = $config['options'] + $options;
                 $data = $config['filter']->filter($data, $o);
             }
         }
-        
+
         return $data;
     }
 }

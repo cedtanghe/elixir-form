@@ -8,17 +8,17 @@ namespace Elixir\Form\Element;
 interface FileInterface
 {
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasMultipleFiles();
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     public function isUploaded();
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     public function receive();
 }

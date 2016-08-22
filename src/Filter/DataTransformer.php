@@ -10,15 +10,15 @@ use Elixir\Form\DataTransformerInterface;
 class DataTransformer implements DataTransformerInterface
 {
     /**
-     * @var FilterInterface 
+     * @var FilterInterface
      */
     protected $in;
-    
+
     /**
-     * @var FilterInterface 
+     * @var FilterInterface
      */
     protected $out;
-    
+
     /**
      * @param FilterInterface $in
      * @param FilterInterface $out
@@ -28,7 +28,7 @@ class DataTransformer implements DataTransformerInterface
         $this->setFilterIn($in);
         $this->setFilterOut($out);
     }
-    
+
     /**
      * @param FilterInterface $value
      */
@@ -36,7 +36,7 @@ class DataTransformer implements DataTransformerInterface
     {
         $this->in = $value;
     }
-    
+
     /**
      * @param FilterInterface $value
      */
@@ -44,22 +44,19 @@ class DataTransformer implements DataTransformerInterface
     {
         $this->out = $value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function filter($content, array $options = [])
     {
-        if ($options[ElementInterface::FILTER_MODE] === ElementInterface::FILTER_IN)
-        {
+        if ($options[ElementInterface::FILTER_MODE] === ElementInterface::FILTER_IN) {
             return $this->applyFilterIn($content, $options);
-        }
-        else
-        {
+        } else {
             return $this->applyFilterOut($content, $options);
         }
     }
-    
+
     /**
      * @see FilterInterface::filter()
      */
@@ -67,7 +64,7 @@ class DataTransformer implements DataTransformerInterface
     {
         return $this->in ? $this->in->filter($content, $options) : $content;
     }
-    
+
     /**
      * @see FilterInterface::filter()
      */

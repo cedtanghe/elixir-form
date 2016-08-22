@@ -2,12 +2,10 @@
 
 namespace Elixir\Form\Extension;
 
-use Elixir\Form\Extension\ExtensionInterface;
-
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class ExtensionTrait 
+class ExtensionTrait
 {
     /**
      * @param ExtensionInterface $extension
@@ -16,7 +14,7 @@ class ExtensionTrait
     {
         $extension->load($this);
     }
-    
+
     /**
      * @param ExtensionInterface $extension
      */

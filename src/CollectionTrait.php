@@ -5,18 +5,18 @@ namespace Elixir\Form;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-trait CollectionTrait 
+trait CollectionTrait
 {
     /**
-     * @var integer
+     * @var int
      */
     protected $minCardinality = 1;
-    
+
     /**
-     * @var integer
+     * @var int
      */
     protected $maxCardinality = -1;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -24,7 +24,7 @@ trait CollectionTrait
     {
         $this->minCardinality = $value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -32,7 +32,7 @@ trait CollectionTrait
     {
         return $this->minCardinality;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +40,7 @@ trait CollectionTrait
     {
         $this->maxCardinality = $value;
     }
-    
+
     /**
      * {@inheritdoc}
      */

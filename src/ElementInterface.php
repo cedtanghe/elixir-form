@@ -14,49 +14,49 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
      * @var string
      */
     const VALUE_NORMALIZED = 'normalized';
-    
+
     /**
      * @var string
      */
     const VALUE_RAW = 'raw';
-    
+
     /**
      * @var string
      */
     const FILTER_MODE = 'filter_mode';
-    
+
     /**
-     * @var integer
+     * @var int
      */
     const FILTER_IN = 1;
-    
+
     /**
-     * @var integer
+     * @var int
      */
     const FILTER_OUT = 2;
-    
+
     /**
-     * @var integer
+     * @var int
      */
     const FILTER_BOTH = 3;
-    
+
     /**
      * @param string $value
      */
     public function setName($value);
-    
+
     /**
      * @return string
      */
     public function getName();
-    
+
     /**
-     * {@internal}
+     * {@internal}.
      */
     public function setParent(self $value);
 
     /**
-     * {@internal}
+     * {@internal}.
      */
     public function getParent();
 
@@ -69,36 +69,38 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
      * @return string|callable
      */
     public function getHelper();
-    
+
     /**
-     * @param  mixed $value
+     * @param mixed $value
      */
     public function setValue($value, $format = self::VALUE_RAW);
-    
+
     /**
      * @return mixed
      */
     public function getValue($format = self::VALUE_NORMALIZED);
-    
+
     /**
      * @param string|array $key
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasAttribute($key);
 
     /**
      * @param string|array $key
-     * @param mixed $default
+     * @param mixed        $default
+     *
      * @return mixed
      */
     public function getAttribute($key, $default = null);
 
     /**
      * @param string|array $key
-     * @param mixed $value
+     * @param mixed        $value
      */
     public function setAttribute($key, $value);
-    
+
     /**
      * @param string|array $key
      */
@@ -113,26 +115,28 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
      * @return array
      */
     public function getAttributes();
-    
+
     /**
      * @param string|array $key
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasOption($key);
 
     /**
      * @param string|array $key
-     * @param mixed $default
+     * @param mixed        $default
+     *
      * @return mixed
      */
     public function getOption($key, $default = null);
 
     /**
      * @param string|array $key
-     * @param mixed $value
+     * @param mixed        $value
      */
     public function setOption($key, $value);
-    
+
     /**
      * @param string|array $key
      */
@@ -147,39 +151,39 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
      * @return array
      */
     public function getOptions();
-    
+
     /**
      * @param mixed $args
      */
     public function prepare($args = null);
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     public function isPrepared();
 
     /**
-     * @param boolean $value
+     * @param bool $value
      */
     public function setRequired($value);
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     public function isRequired();
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     public function isEmpty();
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     public function isEligible();
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     public function isValid();
 }

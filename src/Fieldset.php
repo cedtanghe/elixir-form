@@ -2,9 +2,6 @@
 
 namespace Elixir\Form;
 
-use Elixir\Form\FieldsetInterface;
-use Elixir\Form\Form;
-
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
@@ -14,12 +11,12 @@ class Fieldset extends Form implements FieldsetInterface
      * {@inheritdoc}
      */
     protected $helper = 'fieldset';
-    
+
     /**
      * @var string
      */
     protected $legend;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -27,7 +24,7 @@ class Fieldset extends Form implements FieldsetInterface
     {
         $this->legend = $value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -35,11 +32,11 @@ class Fieldset extends Form implements FieldsetInterface
     {
         return $this->legend;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function prepare($args = null) 
+    public function prepare($args = null)
     {
         $this->setOption('legend', $this->legend);
         parent::prepare($args);

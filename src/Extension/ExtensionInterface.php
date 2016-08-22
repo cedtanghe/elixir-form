@@ -13,9 +13,6 @@ interface ExtensionInterface
      * @param ElementInterface $form
      */
     public function load(ElementInterface $form);
-    
-    /**
-     * @return void
-     */
+
     public function unload();
 }
