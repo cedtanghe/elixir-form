@@ -210,4 +210,18 @@ abstract class FieldAbstract implements FieldInterface
 
         $this->dispatch(new FormEvent(FormEvent::RESET_ELEMENT));
     }
+    
+    /**
+     * @ignore
+     */
+    public function __debugInfo()
+    {
+        return [
+            'name' => $this->name,
+            'required' => $this->required,
+            'helper' => $this->helper,
+            'attributes' => $this->attributes,
+            'options' => $this->options
+        ];
+    }
 }
