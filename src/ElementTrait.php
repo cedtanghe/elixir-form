@@ -96,6 +96,18 @@ trait ElementTrait
     /**
      * {@inheritdoc}
      */
+    public function getRootElement()
+    {
+        if ($this->isMainElement()) {
+            return $this;
+        }
+
+        return $this->parent->getRootElement();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setHelper($value)
     {
         $this->helper = $value;

@@ -61,6 +61,11 @@ interface ElementInterface extends FilterizableInterface, ValidatableInterface
     public function getParent();
 
     /**
+     * @return self
+     */
+    public function getRootElement();
+
+    /**
      * @param string|callable $value
      */
     public function setHelper($value);

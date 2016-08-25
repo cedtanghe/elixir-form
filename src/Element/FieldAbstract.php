@@ -44,15 +44,6 @@ abstract class FieldAbstract implements FieldInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct($name = null)
-    {
-        parent::__construct($name);
-        $this->helper = 'input';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getDefaultCatalogMessages()
     {
         return [

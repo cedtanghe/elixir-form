@@ -108,5 +108,9 @@
         "psr-4": {
             "Elixir\\Test\\Form\\": "tests/"
         }
+    },
+    "suggest": {
+        "psr/http-message": "If you use a file input type",
+        "elixir/elixir-http": "The default file uploader used"
     }
 }
