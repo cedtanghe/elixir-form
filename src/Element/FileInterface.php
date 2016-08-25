@@ -2,6 +2,8 @@
 
 namespace Elixir\Form\Element;
 
+use Elixir\Filter\FilterInterface;
+
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
@@ -18,7 +20,9 @@ interface FileInterface
     public function isUploaded();
 
     /**
+     * @param string|FilterInterface $targetPath
+     *
      * @return bool
      */
-    public function receive();
+    public function receive($targetPath = null);
 }
