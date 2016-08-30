@@ -21,8 +21,6 @@ interface FileInterface
 
     /**
      * @param string|FilterInterface $targetPath
-     *
-     * @return bool
      */
     public function receive($targetPath = null);
 }

@@ -3,6 +3,8 @@
 namespace Elixir\Form\Element;
 
 use Elixir\Form\FormInterface;
+use Elixir\STDLib\Facade\I18N;
+use Elixir\STDLib\MessagesCatalog;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -10,14 +12,24 @@ use Elixir\Form\FormInterface;
 class File extends FieldAbstract implements FileInterface
 {
     /**
-     * @var callable
+     * @var string
      */
-    protected $uploaderFactory = 'Elixir\HTTP\UploadedFileWithControls::create';
+    const FILE_NOT_UPLOADED = 'file_not_uploaded';
 
     /**
-     * @var array
+     * @var string
      */
-    protected $uploaders = [];
+    const UPLOAD_ERROR = 'upload_error';
+
+    /**
+     * @var callable
+     */
+    protected $uploaderFactory = 'Elixir\HTTP\UploadedFile::create';
+
+    /**
+     * @var array|null
+     */
+    protected $uploaders;
 
     /**
      * {@inheritdoc}
@@ -29,6 +41,17 @@ class File extends FieldAbstract implements FileInterface
         }
 
         $this->helper = 'file';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultCatalogMessages()
+    {
+        return [
+            self::FILE_NOT_UPLOADED => I18N::__('The file is not uploaded.', ['context' => 'elixir']),
+            self::UPLOAD_ERROR => I18N::__('An error occurred during upload.', ['context' => 'elixir']),
+        ];
     }
 
     /**
@@ -45,6 +68,18 @@ class File extends FieldAbstract implements FileInterface
     public function getUploaderFactory()
     {
         return $this->uploaderFactory;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUploaders()
+    {
+        if (null === $this->uploaders && isset($_FILES[$this->name])) {
+            $this->uploaders = (array) call_user_func_array($this->uploaderFactory, [$_FILES[$this->name]]);
+        }
+
+        return $this->uploaders;
     }
 
     /**
@@ -85,7 +120,7 @@ class File extends FieldAbstract implements FileInterface
      */
     public function hasMultipleFiles()
     {
-        return count($this->uploaders) > 1;
+        return count($this->getUploaders()) > 1;
     }
 
     /**
@@ -111,7 +146,7 @@ class File extends FieldAbstract implements FileInterface
      */
     public function isUploaded()
     {
-        if (count($this->uploaders) > 0) {
+        if (count($this->getUploaders()) > 0) {
             foreach ($this->uploaders as $uploader) {
                 if (!$uploader->isUploaded()) {
                     return false;
@@ -129,7 +164,7 @@ class File extends FieldAbstract implements FileInterface
      */
     public function isEmpty()
     {
-        // Todo
+        return count($this->getUploaders()) === 0;
     }
 
     /**
@@ -137,7 +172,58 @@ class File extends FieldAbstract implements FileInterface
      */
     public function validate($data = null, array $options = [])
     {
-        // Todo
+        $this->resetValidation();
+        $this->dispatch(new FormEvent(FormEvent::VALIDATE_ELEMENT));
+
+        foreach ($this->getUploaders() as $uploader) {
+            if (!$this->messagesCatalogue) {
+                $this->setMessagesCatalog(MessagesCatalog::instance());
+            }
+
+            $this->validationErrors = [];
+
+            switch ($uploader->getError()) {
+                case UPLOAD_ERR_OK:
+                    if ($uploader->isUploaded()) {
+                        foreach ($this->validators as $config) {
+                            $validator = $config['validator'];
+                            $o = $config['options'] + $options;
+
+                            $valid = $validator->validate($uploader, $o);
+
+                            if (!$valid) {
+                                $this->validationErrors = array_merge($this->validationErrors, $validator->getErrors());
+
+                                if ($this->breakChainValidationOnFailure) {
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        $this->validationErrors = [$this->messagesCatalog->get(self::FILE_NOT_UPLOADED)];
+                    }
+                    break;
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                case UPLOAD_ERR_PARTIAL:
+                case UPLOAD_ERR_NO_FILE:
+                default:
+                    $this->validationErrors = [$this->messagesCatalog->get(self::UPLOAD_ERROR)];
+            }
+        }
+
+        $this->validationErrors = array_unique($this->validationErrors);
+
+        return $this->hasError();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addFilterUpload(FilterInterface $filter, array $options = [])
+    {
+        $options[ElementInterface::FILTER_MODE] = self::FILTER_UPLOAD;
+        $this->addFilter($filter, $options);
     }
 
     /**
@@ -145,7 +231,20 @@ class File extends FieldAbstract implements FileInterface
      */
     public function filter($data = null, array $options = [])
     {
-        // Todo
+        $type = self::FILTER_UPLOAD;
+
+        foreach ($this->getUploaders() as $uploader) {
+            if ($uploader->isUploaded()) {
+                foreach ($this->filters as $config) {
+                    if (($config['options'][self::FILTER_MODE] & $type) === $type) {
+                        $o = $config['options'] + $options;
+                        $data = $config['filter']->filter($uploader, $o);
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -153,19 +252,23 @@ class File extends FieldAbstract implements FileInterface
      */
     public function receive($targetPath = null)
     {
-        $receive = true;
-
-        if ($this->isUploaded()) {
+        $this->filter();
+        $values = [];
+        
+        foreach ($this->getUploaders() as $uploader) {
+            $uploader->moveTo($targetPath);
+            $values[] = $uploader->getClientFilename();
         }
-
-        return $receive;
+        
+        $this->setValue(count($values) > 0 ? $values[0] : $values, self::VALUE_RAW);
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function reset()
     {
-        // Todo
+        $this->uploaders = null;
+        parent::reset();
     }
 }
