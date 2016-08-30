@@ -20,7 +20,12 @@ class File extends FieldAbstract implements FileInterface
      * @var string
      */
     const UPLOAD_ERROR = 'upload_error';
-
+    
+    /**
+     * @var int
+     */
+    const FILTER_UPLOAD = 4;
+    
     /**
      * @var callable
      */
