@@ -56,6 +56,7 @@ class File extends FieldAbstract implements FileInterface
         return [
             self::FILE_NOT_UPLOADED => I18N::__('The file is not uploaded.', ['context' => 'elixir']),
             self::UPLOAD_ERROR => I18N::__('An error occurred during upload.', ['context' => 'elixir']),
+            self::ERROR_DEFAULT => I18N::__('Field is invalid.', ['context' => 'elixir']),
         ];
     }
 
@@ -133,10 +134,6 @@ class File extends FieldAbstract implements FileInterface
      */
     public function prepare($args = null)
     {
-        if (null === $this->helper) {
-            $this->setHelper('file');
-        }
-
         $root = $this->getRootElement();
 
         if ($root instanceof FormInterface) {

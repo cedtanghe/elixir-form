@@ -171,11 +171,7 @@ class Input extends FieldAbstract
         if (null === $type) {
             $this->setType(self::TEXT);
         }
-
-        if (null === $this->helper) {
-            $this->setHelper('input');
-        }
-
+        
         if (array_key_exists($type, static::$excludeTypes)) {
             throw new \LogicException(
                 sprintf(

@@ -47,6 +47,11 @@ class Form implements FormInterface, ExtensionInterface
     protected $built = false;
 
     /**
+     * @var array
+     */
+    protected $validationGroup = [];
+
+    /**
      * @param string $name
      */
     public function __construct($name = null)
@@ -374,6 +379,10 @@ class Form implements FormInterface, ExtensionInterface
         $this->dispatch(new FormEvent(FormEvent::VALIDATE_ELEMENT));
 
         foreach ($this->elements as $element) {
+            if (in_array($element->getName(), $this->validationGroup)) {
+                continue;
+            }
+
             if (!$element->validate(null, $options)) {
                 if (!isset($this->validationErrors['elements'][$element->getName()])) {
                     $this->validationErrors['elements'][$element->getName()] = [];
@@ -416,6 +425,37 @@ class Form implements FormInterface, ExtensionInterface
     }
 
     /**
+     * @param array $members
+     * @param array $omitMembers
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function validateGroup(array $members = [], array $omitMembers = [], array $data = null)
+    {
+        $result = false;
+        $this->validationGroup = [];
+
+        foreach ($this->elements as $element) {
+            if (in_array($element->getName(), $omitMembers)) {
+                continue;
+            } elseif (count($members) > 0 && !in_array($element->getName(), $members)) {
+                continue;
+            }
+
+            $this->validationGroup[] = $element->getName();
+        }
+
+        if (count($this->validationGroup) > 0) {
+            $result = $this->validate($data, ['revalidate' => true]);
+        }
+
+        $this->validationGroup = [];
+
+        return $result;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isValid()
@@ -439,7 +479,7 @@ class Form implements FormInterface, ExtensionInterface
 
         $this->dispatch(new FormEvent(FormEvent::RESET_ELEMENT));
     }
-    
+
     /**
      * @ignore
      */
@@ -451,7 +491,7 @@ class Form implements FormInterface, ExtensionInterface
             'helper' => $this->helper,
             'attributes' => $this->attributes,
             'options' => $this->options,
-            'elements' => $this->elements
+            'elements' => $this->elements,
         ];
     }
 }
