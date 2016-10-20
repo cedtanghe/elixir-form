@@ -5,7 +5,33 @@ namespace Elixir\Form\Element;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class Checkbox
+class Checkbox extends FieldAbstract implements MultipleChoiceInterface
 {
-    // Todo
+    use MultipleChoiceTrait;
+    
+    /**
+     * @var string
+     */
+    const CHECKBOX = 'checkbox';
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($name = null)
+    {
+        if ($name) {
+            $this->setName($name);
+        }
+
+        $this->helper = 'checkbox';
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function prepare($args = null)
+    {
+        $this->setType(self::CHECKBOX);
+        parent::prepare($args);
+    }
 }
