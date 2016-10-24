@@ -2,15 +2,20 @@
 
 namespace Elixir\Form\Element;
 
+use Elixir\Filter\FilterInterface;
+use Elixir\Form\FormEvent;
 use Elixir\Form\FormInterface;
 use Elixir\STDLib\Facade\I18N;
 use Elixir\STDLib\MessagesCatalog;
+use Elixir\STDLib\MessagesCatalogAwareTrait;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
 class File extends FieldAbstract implements FileInterface
 {
+    use MessagesCatalogAwareTrait;
+    
     /**
      * @var string
      */
@@ -55,11 +60,10 @@ class File extends FieldAbstract implements FileInterface
     {
         return [
             self::FILE_NOT_UPLOADED => I18N::__('The file is not uploaded.', ['context' => 'elixir']),
-            self::UPLOAD_ERROR => I18N::__('An error occurred during upload.', ['context' => 'elixir']),
-            self::ERROR_DEFAULT => I18N::__('Field is invalid.', ['context' => 'elixir']),
+            self::UPLOAD_ERROR => I18N::__('An error occurred during upload.', ['context' => 'elixir'])
         ];
     }
-
+    
     /**
      * @return callable
      */
@@ -177,11 +181,11 @@ class File extends FieldAbstract implements FileInterface
         $this->resetValidation();
         $this->dispatch(new FormEvent(FormEvent::VALIDATE_ELEMENT));
 
+        if (!$this->messagesCatalog) {
+            $this->setMessagesCatalog(MessagesCatalog::instance());
+        }
+        
         foreach ($this->getUploaders() as $uploader) {
-            if (!$this->messagesCatalogue) {
-                $this->setMessagesCatalog(MessagesCatalog::instance());
-            }
-
             $this->validationErrors = [];
 
             switch ($uploader->getError()) {
@@ -224,7 +228,7 @@ class File extends FieldAbstract implements FileInterface
      */
     public function addFilterUpload(FilterInterface $filter, array $options = [])
     {
-        $options[ElementInterface::FILTER_MODE] = self::FILTER_UPLOAD;
+        $options[self::FILTER_MODE] = self::FILTER_UPLOAD;
         $this->addFilter($filter, $options);
     }
 

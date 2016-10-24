@@ -3,9 +3,9 @@
 namespace Elixir\Form;
 
 use Elixir\Filter\FilterInterface;
-use Elixir\Filter\FilterTrait;
+use Elixir\Filter\FilterizableTrait;
 use Elixir\Form\Filter\DataTransformerInterface;
-use Elixir\Validator\ValidateTrait;
+use Elixir\Validator\ValidatableTrait;
 use function Elixir\STDLib\array_get;
 use function Elixir\STDLib\array_has;
 use function Elixir\STDLib\array_remove;
@@ -16,12 +16,12 @@ use function Elixir\STDLib\array_set;
  */
 trait ElementTrait
 {
-    use FilterTrait
+    use FilterizableTrait
     {
         addFilter as traitAddFilter;
     }
 
-    use ValidateTrait;
+    use ValidatableTrait;
 
     /**
      * @var string
@@ -234,7 +234,7 @@ trait ElementTrait
     }
 
     /**
-     * @see FilterTrait::addFilter()
+     * @see FilterizableTrait::addFilter()
      */
     public function addFilterIn(FilterInterface $filter, array $options = [])
     {
@@ -243,7 +243,7 @@ trait ElementTrait
     }
 
     /**
-     * @see FilterTrait::addFilter()
+     * @see FilterizableTrait::addFilter()
      */
     public function addFilterOut(FilterInterface $filter, array $options = [])
     {
@@ -252,7 +252,7 @@ trait ElementTrait
     }
 
     /**
-     * @see FilterTrait::addFilter()
+     * @see FilterizableTrait::addFilter()
      */
     public function addFilterBoth(FilterInterface $filter, array $options = [])
     {
@@ -261,7 +261,7 @@ trait ElementTrait
     }
 
     /**
-     * @see FilterTrait::addFilter()
+     * @see FilterizableTrait::addFilter()
      */
     public function addDataTransformer(DataTransformerInterface $filter, array $options = [])
     {

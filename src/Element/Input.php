@@ -180,6 +180,8 @@ class Input extends FieldAbstract
                 )
             );
         }
+        
+        return parent::prepare($args);
     }
 
     /**

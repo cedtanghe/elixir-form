@@ -5,7 +5,6 @@ namespace Elixir\Form;
 use Elixir\Dispatcher\DispatcherTrait;
 use Elixir\Form\Extension\ExtensionInterface;
 use Elixir\Form\Extension\ExtensionTrait;
-use Elixir\STDLib\Facade\I18N;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -59,16 +58,6 @@ class Form implements FormInterface, ExtensionInterface
         if ($name) {
             $this->setName($name);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getDefaultCatalogMessages()
-    {
-        return [
-            self::ERROR_DEFAULT => I18N::__('Form is invalid.', ['context' => 'elixir']),
-        ];
     }
 
     /**

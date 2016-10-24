@@ -6,7 +6,6 @@ use Elixir\Dispatcher\DispatcherTrait;
 use Elixir\Form\ElementTrait;
 use Elixir\Form\FieldInterface;
 use Elixir\Form\FormEvent;
-use Elixir\STDLib\Facade\I18N;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -15,12 +14,7 @@ abstract class FieldAbstract implements FieldInterface
 {
     use ElementTrait;
     use DispatcherTrait;
-
-    /**
-     * @var string
-     */
-    const ERROR_DEFAULT = 'error_default';
-
+    
     /**
      * @var mixed
      */
@@ -40,16 +34,6 @@ abstract class FieldAbstract implements FieldInterface
      * @var bool
      */
     protected $prepared = false;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getDefaultCatalogMessages()
-    {
-        return [
-            self::ERROR_DEFAULT => I18N::__('Field is invalid.', ['context' => 'elixir']),
-        ];
-    }
 
     /**
      * {@inheritdoc}

@@ -2,6 +2,8 @@
 
 namespace Elixir\Form\Element;
 
+use Elixir\Form\FormEvent;
+
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
@@ -60,6 +62,11 @@ class Button extends FieldAbstract
         if (null === $type) {
             $this->setType(self::SUBMIT);
         }
+        
+        $this->setAttribute('name', $this->name);
+        
+        $this->prepared = true;
+        $this->dispatch(new FormEvent(FormEvent::PREPARED));
     }
 
     /**
