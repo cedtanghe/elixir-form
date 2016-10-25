@@ -249,7 +249,7 @@ class Form implements FormInterface, ExtensionInterface
         if (!$this->built) {
             $this->build($data);
         }
-
+        
         $e = new FormEvent(FormEvent::PRE_POPULATE, ['data' => $data]);
         $this->dispatch($e);
 
@@ -265,7 +265,7 @@ class Form implements FormInterface, ExtensionInterface
         if (!$this->built) {
             $this->build($data);
         }
-
+        
         $e = new FormEvent(FormEvent::PRE_SUBMIT, ['data' => $data]);
         $this->dispatch($e);
 
@@ -274,7 +274,7 @@ class Form implements FormInterface, ExtensionInterface
         if (!empty($data)) {
             $this->setValue($data, self::VALUE_RAW);
         }
-
+        
         $this->submitted = false;
         $result = $this->validate();
         $this->submitted = true;

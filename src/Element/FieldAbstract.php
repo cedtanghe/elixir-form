@@ -53,7 +53,7 @@ abstract class FieldAbstract implements FieldInterface
     public function getValue($format = self::VALUE_NORMALIZED)
     {
         $value = $this->value;
-
+        
         if ($format === self::VALUE_NORMALIZED) {
             $value = $this->filter($value, [self::FILTER_MODE => self::FILTER_OUT]);
         }
