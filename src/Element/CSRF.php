@@ -119,7 +119,7 @@ class CSRF extends Input
     {
         $this->resetValidation();
 
-        if ($data) {
+        if (!empty($data)) {
             $this->setValue($data, self::VALUE_RAW);
         }
 
