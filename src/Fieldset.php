@@ -39,6 +39,12 @@ class Fieldset extends Form implements FieldsetInterface
     public function prepare($args = null)
     {
         $this->setOption('legend', $this->legend);
-        parent::prepare($args);
+        
+        $this->removeAttribute('method');
+        $this->removeAttribute('action');
+        $this->removeAttribute('enctype');
+        
+        $this->prepared = true;
+        $this->dispatch(new FormEvent(FormEvent::PREPARED));
     }
 }

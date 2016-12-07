@@ -5,8 +5,18 @@ namespace Elixir\Form;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-trait CollectionTrait
+class Collection extends Fieldset
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected $helper = 'collection';
+    
+    /**
+     * @var bool
+     */
+    protected $sortable = true;
+
     /**
      * @var int
      */
@@ -47,5 +57,21 @@ trait CollectionTrait
     public function getMaxCardinality()
     {
         return $this->maxCardinality;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSortable($value)
+    {
+        $this->sortable = $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSortable()
+    {
+        return $this->sortable;
     }
 }

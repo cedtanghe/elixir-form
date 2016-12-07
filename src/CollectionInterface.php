@@ -36,4 +36,14 @@ interface CollectionInterface
      * @return int
      */
     public function getMaxCardinality();
+
+    /**
+     * @param bool $value
+     */
+    public function setSortable($value);
+
+    /**
+     * @return bool
+     */
+    public function isSortable();
 }

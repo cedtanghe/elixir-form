@@ -50,9 +50,19 @@ class FormEvent extends Event
     const RESET_ELEMENT = 'reset_element';
 
     /**
+     * @var string
+     */
+    const ELEMENT_CREATED = 'element_created';
+
+    /**
      * @var array
      */
     protected $data;
+
+    /**
+     * @var ElementInterface
+     */
+    protected $element;
 
     /**
      * {@inheritdoc}
@@ -62,9 +72,13 @@ class FormEvent extends Event
     public function __construct($type, array $params = [])
     {
         parent::__construct($type);
-        $params += ['data' => null];
+        $params += [
+            'data' => null,
+            'element' => null,
+        ];
 
         $this->data = $params['data'];
+        $this->element = $params['element'];
     }
 
     /**
@@ -81,5 +95,13 @@ class FormEvent extends Event
     public function setData(array $value)
     {
         $this->data = $value;
+    }
+
+    /**
+     * @return ElementInterface
+     */
+    public function getElement()
+    {
+        return $this->element;
     }
 }

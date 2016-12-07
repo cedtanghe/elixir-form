@@ -111,6 +111,7 @@
     },
     "suggest": {
         "psr/http-message": "If you use a file input type",
-        "elixir/elixir-http": "The default file uploader used"
+        "elixir/elixir-http": "The default file uploader used",
+        "elixir/elixir-di": "To resolve the creation of form elements"
     }
 }
