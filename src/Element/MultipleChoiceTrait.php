@@ -92,6 +92,11 @@ trait MultipleChoiceTrait
      */
     public function prepare($args = null)
     {
+        if ($this->prepared && (!isset($args['force']) || true !== $args['force']))
+        {
+            return;
+        }
+        
         $this->setOption('data', $this->data);
         $this->setOption('data-use-keys', $this->dataType);
 

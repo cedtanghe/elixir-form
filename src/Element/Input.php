@@ -166,6 +166,11 @@ class Input extends FieldAbstract
      */
     public function prepare($args = null)
     {
+        if ($this->prepared && (!isset($args['force']) || true !== $args['force']))
+        {
+            return;
+        }
+        
         $type = $this->getType();
 
         if (null === $type) {

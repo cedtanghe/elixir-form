@@ -116,6 +116,11 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function prepare($args = null)
     {
+        if ($this->prepared && (!isset($args['force']) || true !== $args['force']))
+        {
+            return;
+        }
+        
         $this->setOption('required', $this->required);
         $this->setOption('label', $this->label);
         $this->setOption('description', $this->description);

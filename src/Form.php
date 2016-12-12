@@ -266,6 +266,10 @@ class Form implements FormInterface, ExtensionInterface
             $this->build($data);
         }
         
+        if (!$this->prepared) {
+            $this->prepare();
+        }
+        
         $e = new FormEvent(FormEvent::PRE_SUBMIT, ['data' => $data]);
         $this->dispatch($e);
 
@@ -311,6 +315,11 @@ class Form implements FormInterface, ExtensionInterface
      */
     public function prepare($args = null)
     {
+        if ($this->prepared && (!isset($args['force']) || true !== $args['force']))
+        {
+            return;
+        }
+        
         if ($this->parent && $this->getAttribute('enctype') === self::ENCTYPE_MULTIPART) {
             $this->parent->setAttribute('enctype', self::ENCTYPE_MULTIPART);
         }
@@ -325,6 +334,10 @@ class Form implements FormInterface, ExtensionInterface
 
         $this->setOption('required', $this->required);
         $this->setAttribute('name', $this->name);
+        
+        foreach ($this->getElements() as $element) {
+            $element->prepare($args);
+        }
 
         $this->prepared = true;
         $this->dispatch(new FormEvent(FormEvent::PREPARED));

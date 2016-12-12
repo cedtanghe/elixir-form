@@ -38,6 +38,11 @@ class Fieldset extends Form implements FieldsetInterface
      */
     public function prepare($args = null)
     {
+        if ($this->prepared && (!isset($args['force']) || true !== $args['force']))
+        {
+            return;
+        }
+        
         $this->setOption('legend', $this->legend);
         
         $this->removeAttribute('method');

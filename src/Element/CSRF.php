@@ -95,6 +95,11 @@ class CSRF extends Input
      */
     public function prepare($args = null)
     {
+        if ($this->prepared && (!isset($args['force']) || true !== $args['force']))
+        {
+            return;
+        }
+        
         $this->setRequired(true);
         $this->setType(self::HIDDEN);
         

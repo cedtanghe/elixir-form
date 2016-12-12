@@ -31,6 +31,11 @@ class Checkbox extends FieldAbstract implements MultipleChoiceInterface
      */
     public function prepare($args = null)
     {
+        if ($this->prepared && (!isset($args['force']) || true !== $args['force']))
+        {
+            return;
+        }
+        
         $this->setType(self::CHECKBOX);
         parent::prepare($args);
     }

@@ -138,6 +138,11 @@ class File extends FieldAbstract implements FileInterface
      */
     public function prepare($args = null)
     {
+        if ($this->prepared && (!isset($args['force']) || true !== $args['force']))
+        {
+            return;
+        }
+        
         $root = $this->getRootElement();
 
         if ($root instanceof FormInterface) {
